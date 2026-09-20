@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Svetovni popotniki — kviz zastav</title>
+<meta name="theme-color" content="#12102B">
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/zastave.css">
+</head>
+<body>
+
+<!-- ================= GLAVA ================= -->
+<header class="glava">
+  <div class="znamka">
+    <img src="assets/logo-os-sempeter.png" alt="" class="logo">
+    <div>
+      <h1>Svetovni popotniki</h1>
+      <p>kviz zastav</p>
+    </div>
+  </div>
+
+  <div class="skupine" role="group" aria-label="Skupina">
+    <button class="skupina on" data-skupina="A">Skupina A</button>
+    <button class="skupina" data-skupina="B">Skupina B</button>
+  </div>
+
+  <div class="glava-gumbi">
+    <button class="gumb" id="odpri-lestvico">Lestvica</button>
+    <button class="gumb" id="odpri-nastavitve">Nastavitve</button>
+  </div>
+</header>
+
+<!-- ================= PRIPRAVA ================= -->
+<main class="zaslon on" id="zaslon-priprava">
+
+  <section class="orodna">
+    <div class="orodna-skupina">
+      <button class="gumb gumb-glavni" id="mesaj-vse">Naključnih 6 zastav</button>
+      <label class="polje">
+        <span>Celina</span>
+        <select id="filter-celina">
+          <option value="">vse celine</option>
+        </select>
+      </label>
+      <label class="stikalo">
+        <input type="checkbox" id="brez-ponavljanja" checked>
+        <span>Ne ponavljaj že vprašanih</span>
+        <em id="videne-stevec"></em>
+      </label>
+    </div>
+
+    <div class="orodna-skupina desno">
+      <button class="gumb gumb-tih" id="pokazi-vsa-imena">Pokaži vsa imena</button>
+      <button class="gumb gumb-tih" id="skrij-vsa-imena">Skrij vsa imena</button>
+      <button class="gumb gumb-tih" id="izprazni">Izprazni</button>
+      <button class="gumb gumb-glavni gumb-zacni" id="zacni-kviz">Začni kviz ▸</button>
+    </div>
+  </section>
+
+  <div class="mreza-priprava" id="mreza-priprava"></div>
+
+  <p class="namig">
+    Namig: izberi državo v spustnem meniju ali klikni <strong>🎲</strong> za naključno.
+    Oko <strong>👁</strong> pove, ali bo ime vidno med kvizom.
+  </p>
+</main>
+
+<!-- ================= KVIZ ================= -->
+<main class="zaslon" id="zaslon-kviz">
+  <div class="kviz-vrh">
+    <button class="gumb gumb-tih" id="nazaj-na-pripravo">◂ Priprava</button>
+
+    <div class="casovnik" id="casovnik">
+      <button class="cas-gumb" id="cas-zacni">Začni 2:00</button>
+      <span class="cas-prikaz" id="cas-prikaz">2:00</span>
+      <button class="cas-gumb cas-tih" id="cas-ponastavi" title="Ponastavi">↺</button>
+    </div>
+
+    <div class="kviz-desno">
+      <span class="oznaka" id="kviz-skupina"></span>
+      <button class="gumb gumb-glavni" id="razkrij-naslednjo">Razkrij 1 ▸</button>
+    </div>
+  </div>
+
+  <div class="mreza-kviz" id="mreza-kviz"></div>
+</main>
+
+<!-- ================= RAZKRITJE ================= -->
+<div class="prekrivalo" id="razkritje" hidden>
+  <div class="razkritje-okno">
+    <div class="razkritje-levo">
+      <span class="stevilka" id="razkritje-stevilka">1</span>
+      <img class="razkritje-zastava" id="razkritje-zastava" alt="">
+      <h2 class="razkritje-ime" id="razkritje-ime"></h2>
+      <p class="razkritje-pod" id="razkritje-pod"></p>
+    </div>
+
+    <div class="razkritje-desno">
+      <div class="razkritje-glava">
+        <h3>Kdo je uganil?</h3>
+        <div class="razkritje-akcije">
+          <button class="gumb gumb-tih" id="vsi-pravilno">Vsi</button>
+          <button class="gumb gumb-tih" id="nihce-pravilno">Nihče</button>
+        </div>
+      </div>
+      <div class="ucenci" id="ucenci"></div>
+      <div class="razkritje-noga">
+        <span class="stevec" id="stevec-pravilnih">0 učencev</span>
+        <button class="gumb gumb-tih" id="zapri-razkritje">Zapri</button>
+        <button class="gumb gumb-glavni" id="naprej">Naprej ▸</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= LESTVICA ================= -->
+<div class="prekrivalo" id="lestvica" hidden>
+  <div class="plosca">
+    <div class="plosca-glava">
+      <h2>Lestvica</h2>
+      <div class="zavihki" id="lestvica-zavihki">
+        <button class="zavihek on" data-lestvica="A">Skupina A</button>
+        <button class="zavihek" data-lestvica="B">Skupina B</button>
+      </div>
+      <button class="gumb gumb-tih" data-zapri>Zapri</button>
+    </div>
+    <div class="plosca-telo">
+      <table class="tabela" id="tabela-lestvice"></table>
+      <p class="drobno" id="lestvica-drobno"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= NASTAVITVE ================= -->
+<div class="prekrivalo" id="nastavitve" hidden>
+  <div class="plosca">
+    <div class="plosca-glava">
+      <h2>Nastavitve</h2>
+      <button class="gumb gumb-tih" data-zapri>Zapri</button>
+    </div>
+    <div class="plosca-telo">
+
+      <section class="razdelek">
+        <h3>Čas za pisanje</h3>
+        <label class="polje">
+          <span>Sekund</span>
+          <input type="number" id="nastavi-cas" min="15" max="900" step="15" value="120">
+        </label>
+        <label class="stikalo">
+          <input type="checkbox" id="nastavi-zvok" checked>
+          <span>Zvočni signal ob izteku</span>
+        </label>
+      </section>
+
+      <section class="razdelek">
+        <h3>Že vprašane zastave</h3>
+        <p class="drobno" id="videne-opis"></p>
+        <button class="gumb gumb-tih" id="pozabi-videne">Pozabi zgodovino zastav</button>
+      </section>
+
+      <section class="razdelek">
+        <h3>Točke</h3>
+        <p class="drobno">
+          Točke živijo v tem brskalniku. Za prenos na drug računalnik ali
+          za shrambo v repozitoriju uporabi izvoz spodaj.
+        </p>
+        <div class="gumbi-vrsta">
+          <button class="gumb gumb-tih" id="izvozi-json">Shrani varnostno kopijo (.json)</button>
+          <button class="gumb gumb-tih" id="uvozi-json">Naloži varnostno kopijo</button>
+          <button class="gumb gumb-nevaren" id="ponastavi-tocke">Ponastavi vse točke</button>
+        </div>
+        <input type="file" id="datoteka-uvoz" accept="application/json" hidden>
+      </section>
+
+      <section class="razdelek">
+        <h3>Izvoz za GitHub</h3>
+        <p class="drobno">
+          Ustvari datoteko <code>js/zastave-podatki.js</code> z zakritima blokoma
+          imen in točk. Geslo je isto, kot ga uporabljaš za razrede — vpiši ga tukaj,
+          nikamor se ne shrani.
+        </p>
+        <div class="gumbi-vrsta">
+          <label class="polje">
+            <span>Geslo</span>
+            <input type="password" id="geslo-izvoz" placeholder="Geslo…" autocomplete="off">
+          </label>
+          <button class="gumb gumb-glavni" id="ustvari-blok">Ustvari datoteko</button>
+          <button class="gumb gumb-tih" id="naloz-iz-repo">Naloži točke iz repozitorija</button>
+        </div>
+        <p class="drobno" id="izvoz-stanje"></p>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- ================= ODKLEP ================= -->
+<div class="prekrivalo" id="odklep" hidden>
+  <div class="plosca plosca-ozka">
+    <div class="plosca-glava"><h2>Odkleni seznam učencev</h2></div>
+    <div class="plosca-telo">
+      <p class="drobno">Seznam skupin je zakrit. Vpiši geslo, enako kot za razrede.</p>
+      <label class="polje">
+        <span>Geslo</span>
+        <input type="password" id="geslo-odklep" placeholder="Geslo…" autocomplete="current-password">
+      </label>
+      <div class="gumbi-vrsta">
+        <button class="gumb gumb-glavni" id="potrdi-odklep">Odkleni</button>
+        <button class="gumb gumb-tih" id="preskoci-odklep">Nadaljuj brez imen</button>
+      </div>
+      <p class="drobno napaka" id="odklep-napaka"></p>
+    </div>
+  </div>
+</div>
+
+<div class="obvestilo" id="obvestilo" role="status" aria-live="polite"></div>
+
+<script src="js/zastave-podatki.js"></script>
+<script src="js/drzave.js"></script>
+<script src="js/zastave.js"></script>
+</body>
+</html>
