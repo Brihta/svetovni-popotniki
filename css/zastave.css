@@ -247,13 +247,19 @@ body {
 .prekrivalo {
   position:fixed; inset:0; z-index:40; background:rgba(9,10,26,.72);
   backdrop-filter:blur(3px); display:grid; place-items:center; padding:20px;
+  /* Vrstica mora imeti določeno višino, sicer odstotni max-height okna nima
+     ob kaj meriti: okno zraste čez zaslon in gumb „Naprej" pade izven. */
+  grid-template-rows:minmax(0, 1fr);
+  grid-template-columns:minmax(0, 1fr);
 }
 .prekrivalo[hidden] { display:none; }
 
 /* ---- razkritje ---- */
 .razkritje-okno {
   width:min(1180px, 100%); max-height:100%; display:grid;
-  grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:0;
+  grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);
+  grid-template-rows:minmax(0, 1fr);   /* brez tega stolpec z imeni štrli iz okna */
+  gap:0;
   background:var(--kartica); border-radius:26px; box-shadow:var(--senca-mv); overflow:hidden;
 }
 .razkritje-levo {
@@ -355,9 +361,16 @@ body {
 /* ===================== OŽJI ZASLONI ===================== */
 @media (max-width: 1100px) {
   .mreza-priprava, .mreza-kviz { grid-template-columns:repeat(2, 1fr); grid-template-rows:repeat(3, 1fr); }
-  .razkritje-okno { grid-template-columns:1fr; grid-template-rows:minmax(0,1fr) minmax(0,1fr); }
+}
+
+/* Razkritje ostane v dveh stolpcih, dokler je le mogoče: ob zastavi morajo
+   biti vsa imena vidna hkrati. Drsanje sredi ure, ko učitelj lovi dvignjene
+   roke, je prava nadloga — zato je prelom nizko in ne pri širini mreže. */
+@media (max-width: 720px) {
+  .razkritje-okno { grid-template-columns:1fr; grid-template-rows:minmax(0,.85fr) minmax(0,1.15fr); }
   .razkritje-desno { border-left:0; border-top:1px solid var(--rob); }
-  .razkritje-zastava { max-height:26vh; }
+  .razkritje-zastava { max-height:22vh; }
+  .razkritje-ime { font-size:clamp(20px, 4vw, 30px); }
 }
 @media (max-width: 720px) {
   body { overflow:auto; }
