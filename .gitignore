@@ -1,0 +1,12 @@
+# Osebni podatki učencev — nikoli v repozitorij.
+# Delovni seznam skupin živi samo lokalno; v repozitorij gre kvečjemu
+# zakrit blok v js/zastave-podatki.js, ki ga ustvari aplikacija sama.
+popotniki.json
+Ucenci*.csv
+
+# macOS
+.DS_Store
+
+# Claude Code
+.claude/worktrees/
+.claude/settings.local.json

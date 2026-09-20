@@ -1,0 +1,408 @@
+/* =====================================================================
+   Svetovni popotniki — kviz zastav
+   Isti vizualni jezik kot razredni zaslon: temno ozadje, svetle kartice.
+   Vse mere so velikodušne — to gre na projektor, gledajo tretješolci.
+   ===================================================================== */
+
+:root {
+  --brand-yellow:  #EFE337;
+  --brand-gold:    #EDC92D;
+  --brand-blue:    #2266FF;
+  --brand-blue-dk: #2B4BBF;
+  --brand-green:   #55A51C;
+  --brand-red:     #E23B26;
+
+  --ozadje:    #12102B;
+  --kartica:   rgba(255,255,255,.97);
+  --kartica-2: #F4F6FB;
+  --rob:       rgba(20,30,60,.10);
+  --rob-md:    rgba(20,30,60,.18);
+  --text:      #23262F;
+  --text2:     #434757;
+  --muted:     #767C8C;
+
+  --senca:    0 10px 34px rgba(8,10,30,.30), 0 2px 8px rgba(8,10,30,.16);
+  --senca-mv: 0 18px 48px rgba(8,10,30,.40), 0 3px 10px rgba(8,10,30,.20);
+  --zaobl:    20px;
+}
+
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { height:100%; }
+body {
+  font-family:'Open Sans',Helvetica,Arial,sans-serif;
+  color:var(--text2); background:var(--ozadje); overflow:hidden;
+  -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;
+  display:flex; flex-direction:column;
+}
+
+/* ===================== GLAVA ===================== */
+.glava {
+  flex:0 0 auto; display:flex; align-items:center; gap:14px;
+  padding:12px 18px; flex-wrap:wrap;
+}
+.znamka { display:flex; align-items:center; gap:11px; margin-right:auto; }
+.znamka .logo { height:38px; width:auto; border-radius:8px; background:#fff; padding:3px; }
+.znamka h1 { font-size:19px; font-weight:800; color:#fff; letter-spacing:.2px; }
+.znamka p  { font-size:12px; color:rgba(255,255,255,.62); text-transform:uppercase; letter-spacing:1.4px; }
+
+.skupine { display:flex; background:rgba(255,255,255,.10); border-radius:999px; padding:4px; gap:4px; }
+.skupina {
+  border:0; background:transparent; color:rgba(255,255,255,.75); cursor:pointer;
+  font:inherit; font-weight:700; font-size:14px; padding:8px 18px; border-radius:999px;
+  transition:background .15s, color .15s;
+}
+.skupina:hover { color:#fff; }
+.skupina.on { background:var(--brand-yellow); color:#23262F; }
+
+.glava-gumbi { display:flex; gap:8px; }
+
+/* ===================== GUMBI ===================== */
+.gumb {
+  border:0; border-radius:999px; cursor:pointer; font:inherit;
+  font-weight:700; font-size:14px; padding:10px 18px;
+  background:var(--kartica); color:var(--text);
+  box-shadow:0 2px 8px rgba(8,10,30,.20);
+  transition:transform .12s, filter .15s, box-shadow .15s;
+}
+.gumb:hover { filter:brightness(1.05); transform:translateY(-1px); }
+.gumb:active { transform:translateY(0); }
+.gumb:disabled { opacity:.45; cursor:not-allowed; transform:none; filter:none; }
+
+.gumb-glavni { background:var(--brand-blue); color:#fff; }
+.gumb-zacni  { background:var(--brand-green); color:#fff; }
+.gumb-tih    { background:rgba(255,255,255,.14); color:#fff; box-shadow:none; }
+.gumb-tih:hover { background:rgba(255,255,255,.24); }
+.gumb-nevaren { background:rgba(226,59,38,.16); color:var(--brand-red); box-shadow:none; }
+
+/* v svetlih ploščah mora „tih" gumb postati temen */
+.plosca .gumb-tih, .razkritje-okno .gumb-tih {
+  background:var(--kartica-2); color:var(--text2); border:1px solid var(--rob);
+}
+.plosca .gumb-tih:hover, .razkritje-okno .gumb-tih:hover { background:#E8ECF5; }
+
+/* ===================== ZASLONI ===================== */
+.zaslon { flex:1 1 auto; display:none; flex-direction:column; min-height:0; padding:0 18px 16px; }
+.zaslon.on { display:flex; }
+
+/* ===================== ORODNA VRSTICA ===================== */
+.orodna {
+  flex:0 0 auto; display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+  background:rgba(255,255,255,.07); border-radius:var(--zaobl);
+  padding:12px 14px; margin-bottom:14px;
+}
+.orodna-skupina { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.orodna-skupina.desno { margin-left:auto; }
+
+.polje { display:flex; align-items:center; gap:8px; color:rgba(255,255,255,.78); font-size:13px; font-weight:600; }
+.polje select, .polje input {
+  font:inherit; font-size:14px; font-weight:600; color:var(--text);
+  background:var(--kartica); border:1px solid transparent; border-radius:12px;
+  padding:9px 12px; max-width:240px;
+}
+.polje input[type="number"] { width:110px; }
+.polje select:focus-visible, .polje input:focus-visible { outline:3px solid var(--brand-yellow); outline-offset:1px; }
+
+.stikalo { display:flex; align-items:center; gap:8px; color:rgba(255,255,255,.78); font-size:13px; font-weight:600; cursor:pointer; }
+.stikalo input { width:18px; height:18px; accent-color:var(--brand-blue); cursor:pointer; }
+.stikalo em { font-style:normal; color:rgba(255,255,255,.45); font-size:12px; }
+
+/* v svetli plošči */
+.plosca .polje, .plosca .stikalo { color:var(--text2); }
+.plosca .polje select, .plosca .polje input { background:var(--kartica-2); border-color:var(--rob); }
+
+/* ===================== MREŽA: PRIPRAVA ===================== */
+.mreza-priprava {
+  flex:1 1 auto; min-height:0; display:grid; gap:14px;
+  grid-template-columns:repeat(3, 1fr); grid-template-rows:repeat(2, 1fr);
+}
+.mesto {
+  background:var(--kartica); border-radius:var(--zaobl); box-shadow:var(--senca);
+  display:flex; flex-direction:column; overflow:hidden; min-height:0;
+}
+.mesto-vrh {
+  display:flex; align-items:center; gap:8px; padding:9px 10px 9px 12px;
+  border-bottom:1px solid var(--rob); flex:0 0 auto;
+}
+.mesto-st {
+  width:26px; height:26px; flex:0 0 auto; border-radius:50%;
+  background:var(--brand-blue); color:#fff;
+  display:grid; place-items:center; font-size:13px; font-weight:800;
+}
+.mesto-vrh select {
+  flex:1 1 auto; min-width:0; font:inherit; font-size:14px; font-weight:600;
+  color:var(--text); background:var(--kartica-2);
+  border:1px solid var(--rob); border-radius:10px; padding:8px 10px;
+}
+.mesto-vrh select:focus-visible { outline:3px solid var(--brand-blue); outline-offset:1px; }
+
+.ikona {
+  flex:0 0 auto; width:34px; height:34px; border:0; border-radius:10px; cursor:pointer;
+  background:var(--kartica-2); font-size:16px; line-height:1;
+  display:grid; place-items:center; transition:background .15s;
+}
+.ikona:hover { background:#E8ECF5; }
+.ikona.ugasnjeno { opacity:.42; }
+
+/* Zastava se mora vklopiti v celico, ne glede na razmerje stranic.
+   `position:relative` + absolutna slika: brez tega odstotni max-height nima
+   ob kaj meriti (višino vrstice določa vsebina) in zastava prerase kartico. */
+.mesto-zastava {
+  position:relative; flex:1 1 auto; min-height:0; display:grid; place-items:center;
+  background:
+    linear-gradient(45deg, #EDEFF5 25%, transparent 25%, transparent 75%, #EDEFF5 75%) 0 0/18px 18px,
+    linear-gradient(45deg, #EDEFF5 25%, transparent 25%, transparent 75%, #EDEFF5 75%) 9px 9px/18px 18px,
+    #F8F9FC;
+}
+.mesto-zastava img {
+  position:absolute; inset:12px; margin:auto; width:auto; height:auto;
+  max-width:calc(100% - 24px); max-height:calc(100% - 24px);
+  border-radius:6px; box-shadow:0 3px 12px rgba(8,10,30,.22);
+}
+.mesto-zastava .prazno { color:var(--muted); font-size:14px; font-weight:600; }
+
+.mesto-ime {
+  flex:0 0 auto; padding:9px 12px; text-align:center;
+  font-size:15px; font-weight:700; color:var(--text);
+  border-top:1px solid var(--rob); background:var(--kartica-2);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.mesto-ime .celina { color:var(--muted); font-weight:600; font-size:13px; }
+.mesto.skrito .mesto-ime { color:var(--muted); font-style:italic; font-weight:600; }
+
+.namig { flex:0 0 auto; padding-top:12px; color:rgba(255,255,255,.48); font-size:13px; text-align:center; }
+.namig strong { color:rgba(255,255,255,.72); }
+
+/* ===================== KVIZ ===================== */
+.kviz-vrh {
+  flex:0 0 auto; display:flex; align-items:center; gap:14px;
+  margin-bottom:14px; flex-wrap:wrap;
+}
+.kviz-desno { display:flex; align-items:center; gap:10px; margin-left:auto; }
+.oznaka {
+  color:rgba(255,255,255,.62); font-size:13px; font-weight:700;
+  text-transform:uppercase; letter-spacing:1.2px;
+}
+
+.casovnik {
+  display:flex; align-items:center; gap:10px;
+  background:rgba(255,255,255,.08); border-radius:999px; padding:5px 8px 5px 5px;
+}
+.cas-gumb {
+  border:0; border-radius:999px; cursor:pointer; font:inherit; font-weight:700; font-size:14px;
+  padding:9px 16px; background:var(--brand-yellow); color:#23262F;
+}
+.cas-gumb.cas-tih { background:rgba(255,255,255,.14); color:#fff; padding:9px 12px; font-size:16px; }
+.cas-prikaz {
+  font-variant-numeric:tabular-nums; font-size:26px; font-weight:800;
+  color:#fff; min-width:86px; text-align:center; letter-spacing:.5px;
+}
+.casovnik.izteka .cas-prikaz { color:var(--brand-yellow); }
+.casovnik.konec  .cas-prikaz { color:var(--brand-red); animation:utrip .7s steps(1) infinite; }
+@keyframes utrip { 50% { opacity:.25; } }
+
+.mreza-kviz {
+  flex:1 1 auto; min-height:0; display:grid; gap:16px;
+  grid-template-columns:repeat(3, 1fr); grid-template-rows:repeat(2, 1fr);
+}
+.kartica {
+  position:relative; background:var(--kartica); border-radius:var(--zaobl);
+  box-shadow:var(--senca); display:flex; flex-direction:column; overflow:hidden;
+  cursor:pointer; border:0; padding:0; font:inherit; text-align:inherit;
+  transition:transform .14s, box-shadow .14s;
+}
+.kartica:hover { transform:translateY(-3px); box-shadow:var(--senca-mv); }
+.kartica:focus-visible { outline:4px solid var(--brand-yellow); outline-offset:2px; }
+.kartica.koncana { opacity:.55; }
+.kartica.koncana::after {
+  content:'✓'; position:absolute; top:12px; right:14px;
+  width:34px; height:34px; border-radius:50%; background:var(--brand-green); color:#fff;
+  display:grid; place-items:center; font-size:19px; font-weight:800;
+}
+.kartica-st {
+  position:absolute; top:12px; left:14px; z-index:2;
+  width:40px; height:40px; border-radius:50%;
+  background:var(--brand-blue); color:#fff;
+  display:grid; place-items:center; font-size:20px; font-weight:800;
+  box-shadow:0 3px 10px rgba(8,10,30,.3);
+}
+.kartica-zastava {
+  position:relative; flex:1 1 auto; min-height:0; display:grid; place-items:center;
+  background:#F8F9FC;
+}
+.kartica-zastava img {
+  position:absolute; inset:20px; margin:auto; width:auto; height:auto;
+  max-width:calc(100% - 40px); max-height:calc(100% - 40px);
+  border-radius:8px; box-shadow:0 5px 20px rgba(8,10,30,.25);
+}
+.kartica-ime {
+  flex:0 0 auto; padding:12px; text-align:center;
+  font-size:clamp(16px, 2.1vw, 26px); font-weight:800; color:var(--text);
+  border-top:1px solid var(--rob); background:var(--kartica-2);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.kartica-ime.zakrito { color:transparent; }
+.kartica-ime.zakrito::before { content:'• • •'; color:var(--muted); letter-spacing:4px; }
+
+/* ===================== PREKRIVALA ===================== */
+.prekrivalo {
+  position:fixed; inset:0; z-index:40; background:rgba(9,10,26,.72);
+  backdrop-filter:blur(3px); display:grid; place-items:center; padding:20px;
+}
+.prekrivalo[hidden] { display:none; }
+
+/* ---- razkritje ---- */
+.razkritje-okno {
+  width:min(1180px, 100%); max-height:100%; display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:0;
+  background:var(--kartica); border-radius:26px; box-shadow:var(--senca-mv); overflow:hidden;
+}
+.razkritje-levo {
+  position:relative; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:14px; padding:26px; background:#F8F9FC; min-height:0;
+}
+.razkritje-levo .stevilka {
+  position:absolute; top:16px; left:20px;
+  width:42px; height:42px; border-radius:50%; background:var(--brand-blue); color:#fff;
+  display:grid; place-items:center; font-size:21px; font-weight:800;
+}
+.razkritje-zastava {
+  max-width:100%; max-height:44vh; object-fit:contain;
+  border-radius:10px; box-shadow:0 8px 30px rgba(8,10,30,.28);
+}
+.razkritje-ime { font-size:clamp(24px, 3.2vw, 42px); font-weight:800; color:var(--text); text-align:center; }
+.razkritje-pod { color:var(--muted); font-size:15px; font-weight:600; text-align:center; }
+
+.razkritje-desno { display:flex; flex-direction:column; min-height:0; border-left:1px solid var(--rob); }
+.razkritje-glava {
+  flex:0 0 auto; display:flex; align-items:center; gap:10px;
+  padding:18px 20px; border-bottom:1px solid var(--rob);
+}
+.razkritje-glava h3 { font-size:18px; font-weight:800; color:var(--text); margin-right:auto; }
+.razkritje-akcije { display:flex; gap:8px; }
+.razkritje-akcije .gumb { padding:8px 14px; font-size:13px; }
+
+.ucenci {
+  flex:1 1 auto; min-height:0; overflow-y:auto; padding:16px 20px;
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:9px;
+  align-content:start;
+}
+.ucenec {
+  border:1px solid var(--rob-md); border-radius:13px; background:#fff; cursor:pointer;
+  font:inherit; font-weight:700; font-size:15px; color:var(--text2);
+  padding:11px 12px; text-align:left; line-height:1.25;
+  transition:background .12s, border-color .12s, color .12s, transform .1s;
+}
+.ucenec:hover { border-color:var(--brand-blue); transform:translateY(-1px); }
+.ucenec small { display:block; font-weight:600; font-size:12px; color:var(--muted); }
+.ucenec.pravilno { background:var(--brand-green); border-color:var(--brand-green); color:#fff; }
+.ucenec.pravilno small { color:rgba(255,255,255,.8); }
+.ucenci .prazno { grid-column:1/-1; color:var(--muted); font-size:14px; padding:8px 0; }
+
+.razkritje-noga {
+  flex:0 0 auto; display:flex; align-items:center; gap:10px;
+  padding:14px 20px; border-top:1px solid var(--rob); background:var(--kartica-2);
+}
+.stevec { margin-right:auto; font-weight:700; font-size:15px; color:var(--text2); }
+
+/* ---- plošča (lestvica, nastavitve, odklep) ---- */
+.plosca {
+  width:min(760px, 100%); max-height:100%; display:flex; flex-direction:column;
+  background:var(--kartica); border-radius:26px; box-shadow:var(--senca-mv); overflow:hidden;
+}
+.plosca-ozka { width:min(440px, 100%); }
+.plosca-glava {
+  flex:0 0 auto; display:flex; align-items:center; gap:12px;
+  padding:18px 22px; border-bottom:1px solid var(--rob);
+}
+.plosca-glava h2 { font-size:20px; font-weight:800; color:var(--text); margin-right:auto; }
+.plosca-telo { flex:1 1 auto; min-height:0; overflow-y:auto; padding:20px 22px 24px; }
+
+.zavihki { display:flex; background:var(--kartica-2); border-radius:999px; padding:4px; gap:4px; }
+.zavihek {
+  border:0; background:transparent; color:var(--muted); cursor:pointer;
+  font:inherit; font-weight:700; font-size:13px; padding:7px 15px; border-radius:999px;
+}
+.zavihek.on { background:var(--brand-blue); color:#fff; }
+
+.razdelek { padding-bottom:22px; margin-bottom:22px; border-bottom:1px solid var(--rob); }
+.razdelek:last-child { border-bottom:0; margin-bottom:0; padding-bottom:0; }
+.razdelek h3 { font-size:15px; font-weight:800; color:var(--text); margin-bottom:10px; }
+.razdelek .polje { margin-bottom:10px; }
+
+.gumbi-vrsta { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px; }
+.drobno { color:var(--muted); font-size:13px; line-height:1.55; }
+.drobno code { background:var(--kartica-2); border-radius:5px; padding:1px 5px; font-size:12px; }
+.drobno.napaka { color:var(--brand-red); font-weight:700; }
+
+.tabela { width:100%; border-collapse:collapse; }
+.tabela th, .tabela td { padding:10px 12px; text-align:left; border-bottom:1px solid var(--rob); font-size:15px; }
+.tabela th { font-weight:800; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.8px; }
+.tabela td.st { color:var(--muted); font-weight:700; width:44px; }
+.tabela td.tocke { text-align:right; font-weight:800; color:var(--text); font-variant-numeric:tabular-nums; }
+.tabela td.razred { color:var(--muted); font-size:13px; }
+.tabela tr.vrh td.tocke { color:var(--brand-green); }
+.tabela .prazno { color:var(--muted); font-size:14px; padding:14px 12px; }
+
+/* ===================== OBVESTILO ===================== */
+.obvestilo {
+  position:fixed; left:50%; bottom:26px; transform:translate(-50%, 16px); z-index:60;
+  background:#23262F; color:#fff; font-size:14px; font-weight:600;
+  padding:12px 20px; border-radius:999px; box-shadow:var(--senca);
+  opacity:0; pointer-events:none; transition:opacity .2s, transform .2s;
+}
+.obvestilo.vidno { opacity:1; transform:translate(-50%, 0); }
+
+/* ===================== OŽJI ZASLONI ===================== */
+@media (max-width: 1100px) {
+  .mreza-priprava, .mreza-kviz { grid-template-columns:repeat(2, 1fr); grid-template-rows:repeat(3, 1fr); }
+  .razkritje-okno { grid-template-columns:1fr; grid-template-rows:minmax(0,1fr) minmax(0,1fr); }
+  .razkritje-desno { border-left:0; border-top:1px solid var(--rob); }
+  .razkritje-zastava { max-height:26vh; }
+}
+@media (max-width: 720px) {
+  body { overflow:auto; }
+  .mreza-priprava, .mreza-kviz { grid-template-columns:1fr; grid-template-rows:none; }
+  .mesto, .kartica { min-height:230px; }
+  .orodna-skupina.desno { margin-left:0; }
+  .znamka { margin-right:0; width:100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration:.01ms !important; transition-duration:.01ms !important; }
+}
+
+/* ===================== ZNAČKA SINHRONIZACIJE =====================
+   Učitelj mora z enim pogledom vedeti, ali so točke res na GitHubu.
+   Zato je značka v glavi, ne skrita v nastavitvah. */
+.znacka-sinhro {
+  display:flex; align-items:center; gap:8px;
+  border:0; border-radius:999px; cursor:pointer; font:inherit;
+  font-size:13px; font-weight:700; padding:9px 15px;
+  background:rgba(255,255,255,.10); color:rgba(255,255,255,.80);
+  transition:background .15s, color .15s;
+}
+.znacka-sinhro:hover { background:rgba(255,255,255,.20); color:#fff; }
+.znacka-pika {
+  width:9px; height:9px; border-radius:50%; flex:0 0 auto;
+  background:currentColor;
+}
+
+.znacka-sinhro[data-stanje="usklajeno"] { color:#8FE08A; }
+.znacka-sinhro[data-stanje="caka"]      { color:var(--brand-gold); }
+.znacka-sinhro[data-stanje="napaka"]    { color:#FF9A8B; }
+.znacka-sinhro[data-stanje="brez"]      { color:rgba(255,255,255,.55); }
+
+.znacka-sinhro[data-stanje="poteka"] { color:var(--brand-yellow); }
+.znacka-sinhro[data-stanje="poteka"] .znacka-pika { animation:utripPika 1s ease-in-out infinite; }
+@keyframes utripPika { 50% { opacity:.25; } }
+
+/* na ožjem zaslonu je pika dovolj */
+@media (max-width: 980px) {
+  .znacka-sinhro .znacka-besedilo { display:none; }
+  .znacka-sinhro { padding:10px; }
+}
+
+/* polje čez celo širino plošče (repozitorij, žeton) */
+.plosca .polje-siroko { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.plosca .polje-siroko > span { flex:0 0 96px; }
+.plosca .polje-siroko input { flex:1 1 auto; max-width:none; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; }

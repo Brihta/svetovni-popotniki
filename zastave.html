@@ -27,6 +27,9 @@
   </div>
 
   <div class="glava-gumbi">
+    <button class="znacka-sinhro" id="znacka-sinhro" data-stanje="brez">
+      <span class="znacka-pika"></span><span class="znacka-besedilo">Samo ta računalnik</span>
+    </button>
     <button class="gumb" id="odpri-lestvico">Lestvica</button>
     <button class="gumb" id="odpri-nastavitve">Nastavitve</button>
   </div>
@@ -157,67 +160,59 @@
       <section class="razdelek">
         <h3>Že vprašane zastave</h3>
         <p class="drobno" id="videne-opis"></p>
-        <button class="gumb gumb-tih" id="pozabi-videne">Pozabi zgodovino zastav</button>
+        <button class="gumb gumb-tih" id="pozabi-videne">Začni izbor zastav znova</button>
       </section>
 
       <section class="razdelek">
-        <h3>Točke</h3>
+        <h3>Varnostna kopija</h3>
         <p class="drobno">
-          Točke živijo v tem brskalniku. Za prenos na drug računalnik ali
-          za shrambo v repozitoriju uporabi izvoz spodaj.
+          Poleg GitHuba lahko kadar koli shraniš kopijo v datoteko. Nalaganje
+          zapise <em>zlije</em> s trenutnimi, ne prepiše jih.
         </p>
         <div class="gumbi-vrsta">
-          <button class="gumb gumb-tih" id="izvozi-json">Shrani varnostno kopijo (.json)</button>
-          <button class="gumb gumb-tih" id="uvozi-json">Naloži varnostno kopijo</button>
+          <button class="gumb gumb-tih" id="izvozi-json">Shrani kopijo (.json)</button>
+          <button class="gumb gumb-tih" id="uvozi-json">Naloži kopijo</button>
           <button class="gumb gumb-nevaren" id="ponastavi-tocke">Ponastavi vse točke</button>
         </div>
         <input type="file" id="datoteka-uvoz" accept="application/json" hidden>
       </section>
 
       <section class="razdelek">
-        <h3>Izvoz za GitHub</h3>
+        <h3>Shramba na GitHubu</h3>
         <p class="drobno">
-          Ustvari datoteko <code>js/zastave-podatki.js</code> z zakritima blokoma
-          imen in točk. Geslo je isto, kot ga uporabljaš za razrede — vpiši ga tukaj,
-          nikamor se ne shrani.
+          Točke in seznam učencev živijo v zasebnem repozitoriju, da so iste v
+          vsaki učilnici. Žeton ostane na tem računalniku in ne gre nikamor drugam.
+          Potrebuje <em>fine-grained</em> žeton s pravico <strong>Contents:
+          Read and write</strong> samo za ta repozitorij.
         </p>
+        <label class="polje polje-siroko">
+          <span>Repozitorij</span>
+          <input type="text" id="repo-pot" placeholder="Brihta/popotniki-tocke" autocomplete="off" spellcheck="false">
+        </label>
+        <label class="polje polje-siroko">
+          <span>Žeton</span>
+          <input type="password" id="zeton" placeholder="github_pat_…" autocomplete="off">
+        </label>
+        <label class="stikalo">
+          <input type="checkbox" id="zeton-trajno" checked>
+          <span>Zapomni si žeton na tem računalniku</span>
+        </label>
+        <p class="drobno">Na tujem ali skupnem računalniku to odkljukaj — žeton bo veljal samo do zaprtja brskalnika.</p>
         <div class="gumbi-vrsta">
-          <label class="polje">
-            <span>Geslo</span>
-            <input type="password" id="geslo-izvoz" placeholder="Geslo…" autocomplete="off">
-          </label>
-          <button class="gumb gumb-glavni" id="ustvari-blok">Ustvari datoteko</button>
-          <button class="gumb gumb-tih" id="naloz-iz-repo">Naloži točke iz repozitorija</button>
+          <button class="gumb gumb-glavni" id="povezi">Poveži</button>
+          <button class="gumb gumb-tih" id="sinhroniziraj" hidden>Sinhroniziraj zdaj</button>
+          <button class="gumb gumb-nevaren" id="odjavi" hidden>Odklopi ta računalnik</button>
         </div>
-        <p class="drobno" id="izvoz-stanje"></p>
+        <p class="drobno" id="povezava-stanje"></p>
       </section>
 
     </div>
   </div>
 </div>
 
-<!-- ================= ODKLEP ================= -->
-<div class="prekrivalo" id="odklep" hidden>
-  <div class="plosca plosca-ozka">
-    <div class="plosca-glava"><h2>Odkleni seznam učencev</h2></div>
-    <div class="plosca-telo">
-      <p class="drobno">Seznam skupin je zakrit. Vpiši geslo, enako kot za razrede.</p>
-      <label class="polje">
-        <span>Geslo</span>
-        <input type="password" id="geslo-odklep" placeholder="Geslo…" autocomplete="current-password">
-      </label>
-      <div class="gumbi-vrsta">
-        <button class="gumb gumb-glavni" id="potrdi-odklep">Odkleni</button>
-        <button class="gumb gumb-tih" id="preskoci-odklep">Nadaljuj brez imen</button>
-      </div>
-      <p class="drobno napaka" id="odklep-napaka"></p>
-    </div>
-  </div>
-</div>
-
 <div class="obvestilo" id="obvestilo" role="status" aria-live="polite"></div>
 
-<script src="js/zastave-podatki.js"></script>
+<script src="js/oblak.js"></script>
 <script src="js/drzave.js"></script>
 <script src="js/zastave.js"></script>
 </body>

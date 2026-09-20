@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "svetovni-popotniki",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-l", "3460", "/Users/ninokokalj/Documents/Shared_documents/GitHub/svetovni-popotniki"],
+      "port": 3460
+    }
+  ]
+}

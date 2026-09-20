@@ -1,0 +1,15 @@
+{
+  "name": "Svetovni popotniki — kviz zastav",
+  "short_name": "Zastave",
+  "description": "Kviz zastav za RAP Svetovni popotniki, OŠ Šempeter v Savinjski dolini.",
+  "start_url": "./zastave.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#12102B",
+  "theme_color": "#12102B",
+  "lang": "sl",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
