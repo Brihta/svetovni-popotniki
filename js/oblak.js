@@ -95,15 +95,20 @@ const Oblak = {
   /** Preveri žeton in dostop do repozitorija. Vrne { ok, kdo, napaka }. */
   async preveri() {
     try {
+      /* /user rabimo samo za prijazen izpis imena. Fine-grained žeton brez
+         računskih pravic tu lahko vrne 403, pa je za repozitorij vseeno
+         popolnoma v redu — zato je usoden samo 401 (napačen žeton). */
       const jaz = await this._klic('/user');
       if (jaz.status === 401) return { ok: false, napaka: 'Žeton ni veljaven ali je potekel.' };
-      if (!jaz.ok) return { ok: false, napaka: 'GitHub je odgovoril s kodo ' + jaz.status + '.' };
-      const kdo = (await jaz.json()).login;
+      let kdo = null;
+      if (jaz.ok) { try { kdo = (await jaz.json()).login; } catch (e) {} }
 
       const r = await this._klic(`/repos/${this.nastavitve.lastnik}/${this.nastavitve.repo}`);
+      if (r.status === 401) return { ok: false, napaka: 'Žeton ni veljaven ali je potekel.' };
       if (r.status === 404) {
-        return { ok: false, napaka: 'Repozitorija ni ali pa mu žeton nima dostopa. ' +
-                                    'Pri fine-grained žetonu preveri, da je ta repozitorij izbran.' };
+        return { ok: false, napaka: `Repozitorija ${this.nastavitve.lastnik}/${this.nastavitve.repo} ni, ` +
+                                    'ali pa žetonu ni dodeljen. Pri fine-grained žetonu preveri ' +
+                                    'Repository access → Only select repositories.' };
       }
       if (!r.ok) return { ok: false, napaka: 'Repozitorij: koda ' + r.status + '.' };
 

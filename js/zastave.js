@@ -849,7 +849,7 @@ async function povezi() {
   izrisiPovezavo();
   osveziPrikaze();
   izrisiPripravo();
-  obvesti(`Povezano kot ${rez.kdo}.`);
+  obvesti(rez.kdo ? `Povezano kot ${rez.kdo}.` : 'Povezano z GitHubom.');
 }
 
 /* ------------------------------------------------------------------ *
