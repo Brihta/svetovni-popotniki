@@ -48,14 +48,16 @@ datoteki `podatki.json`. Brskalnik ima samo delovno kopijo.
 
 ### Enkratna nastavitev
 
-1. Na GitHubu naredi nov **zaseben** repozitorij, npr. `Brihta/popotniki-tocke`.
+1. Na GitHubu naredi nov **zaseben** repozitorij, npr. `nicki89-blip/popotniki-tocke`.
    Prazen je čisto v redu — datoteko ustvari aplikacija sama.
+   Naredi ga **pod svojim računom, ne pod organizacijo `Brihta`** — pri organizaciji
+   mora žeton posebej odobriti še organizacija sama.
 2. Naredi *fine-grained* žeton: **Settings → Developer settings → Personal access
    tokens → Fine-grained tokens → Generate new token**.
-   - *Repository access*: **Only select repositories** → izberi `popotniki-tocke`
+   - *Repository access*: **Only select repositories** → izberi `popotniki-tocke` (pod svojim računom, ne pod organizacijo)
    - *Permissions → Repository permissions → Contents*: **Read and write**
    - *Expiration*: koliko časa hočeš; ko poteče, ga je treba obnoviti
-3. V kvizu odpri **Nastavitve → Shramba na GitHubu**, vpiši `Brihta/popotniki-tocke`
+3. V kvizu odpri **Nastavitve → Shramba na GitHubu**, vpiši `nicki89-blip/popotniki-tocke`
    in žeton, pritisni **Poveži**.
 
 Korak 3 ponoviš na vsakem računalniku, ki ga uporabljaš. Žeton ostane na tistem
