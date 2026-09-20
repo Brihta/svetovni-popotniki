@@ -63,6 +63,16 @@ datoteki `podatki.json`. Brskalnik ima samo delovno kopijo.
 Korak 3 ponoviš na vsakem računalniku, ki ga uporabljaš. Žeton ostane na tistem
 računalniku in ne gre nikoli v noben repozitorij.
 
+### Če žeton po zaprtju brskalnika izgine
+
+Chrome ima nastavitev *Delete data sites have saved to your device when you close
+all windows*. Če je vklopljena, se ob zaprtju pobriše tudi žeton — in z njim
+delovna kopija točk, ki morda še ni prišla na GitHub.
+
+Odpri `chrome://settings/content/siteData` in pod **Allowed to save data on your
+device → Add** dodaj `https://brihta.github.io`. Privzetega vedenja za ostale
+strani ni treba spreminjati.
+
 > Na tujem ali skupnem računalniku odkljukaj *Zapomni si žeton na tem računalniku* —
 > takrat žeton velja samo do zaprtja brskalnika.
 
