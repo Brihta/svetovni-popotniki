@@ -45,7 +45,7 @@ const Stanje = {
   sekund: Shramba.beri('sekund', 120),
   zvok: Shramba.beri('zvok', true),
 
-  ucenci: null,                                  // { A:{naziv,ucenci:[]}, B:{...} }
+  ucenci: Shramba.beri('ucenci', null),          // { A:{naziv,ucenci:[]}, B:{...} }
   krogi: Shramba.beri('krogi', []),              // [{ id, cas, spremenjeno, skupina, drzava, pravilni[] }]
   zacetekZastav: Shramba.beri('zacetekZastav', { A: null, B: null }),
 
@@ -72,6 +72,9 @@ function shraniStanje() {
 function shraniPodatke() {
   Shramba.pisi('krogi', Stanje.krogi);
   Shramba.pisi('zacetekZastav', Stanje.zacetekZastav);
+  // Tudi imena: brez tega bi seznam, naložen iz varnostne kopije, ob osvežitvi
+  // strani izginil povsod, kjer ni ne GitHuba ne popotniki.json.
+  if (Stanje.ucenci) Shramba.pisi('ucenci', Stanje.ucenci);
   Sinhro.naroci();
 }
 
@@ -195,6 +198,7 @@ const Sinhro = {
         if (podatki.zacetekZastav) Stanje.zacetekZastav = podatki.zacetekZastav;
         Shramba.pisi('krogi', Stanje.krogi);
         Shramba.pisi('zacetekZastav', Stanje.zacetekZastav);
+        if (Stanje.ucenci) Shramba.pisi('ucenci', Stanje.ucenci);
       }
       Oblak._javi(this.cakajoce ? 'caka' : 'usklajeno');
       // če smo med potjo kaj nabrali ali datoteke sploh še ni, jo zapišemo
@@ -1049,6 +1053,7 @@ async function zagon() {
     const izDatoteke = await Ucenci.izDatoteke();
     if (izDatoteke) {
       Stanje.ucenci = izDatoteke;
+      Shramba.pisi('ucenci', izDatoteke);
       if (Oblak.jePovezan()) Sinhro.naroci();   // ponesemo imena na GitHub
     }
   }
