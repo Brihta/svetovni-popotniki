@@ -828,7 +828,16 @@ async function povezi() {
   const rez = await Oblak.preveri();
   if (!rez.ok) {
     st.className = 'drobno napaka';
-    st.textContent = rez.napaka;
+    /* Pri napačnem žetonu povemo dolžino in zadnje znake: daleč najpogostejši
+       vzrok je odrezano lepljenje, ker GitHub žeton prikaže v prirezanem
+       polju. Fine-grained žeton ima okoli 93 znakov. */
+    const z = Oblak.nastavitve.zeton || '';
+    const namig = /žeton/i.test(rez.napaka) && z
+      ? ` Vpisani žeton ima ${z.length} ${sklon(z.length, ['znak', 'znaka', 'znake', 'znakov'])}` +
+        ` in se konča na „…${z.slice(-4)}".` +
+        (z.length < 80 ? ' To je prekratko — verjetno je bil prilepljen odrezan.' : '')
+      : '';
+    st.textContent = rez.napaka + namig;
     return;
   }
 
