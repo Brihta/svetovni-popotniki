@@ -406,3 +406,10 @@ body {
 .plosca .polje-siroko { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
 .plosca .polje-siroko > span { flex:0 0 96px; }
 .plosca .polje-siroko input { flex:1 1 auto; max-width:none; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; }
+
+/* Zgled v polju mora biti na prvi pogled ločljiv od vpisane vrednosti —
+   sicer je prazno polje videti izpolnjeno. */
+.plosca .polje input::placeholder,
+.plosca .polje-siroko input::placeholder {
+  color:var(--muted); opacity:.75; font-style:italic;
+}

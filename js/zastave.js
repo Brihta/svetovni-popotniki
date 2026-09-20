@@ -812,7 +812,7 @@ async function povezi() {
   const [lastnik, repo] = pot.split('/');
   if (!lastnik || !repo) {
     st.className = 'drobno napaka';
-    st.textContent = 'Vpiši repozitorij v obliki lastnik/ime, npr. Brihta/popotniki-tocke.';
+    st.textContent = 'Vpiši repozitorij v obliki lastnik/ime, npr. nicki89-blip/popotniki-tocke.';
     return;
   }
   if (!zeton && !Oblak.nastavitve.zeton) {
