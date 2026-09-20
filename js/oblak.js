@@ -92,30 +92,41 @@ const Oblak = {
     return odziv;
   },
 
-  /** Preveri žeton in dostop do repozitorija. Vrne { ok, kdo, napaka }. */
+  /**
+   * Preveri žeton in dostop do repozitorija. Vrne { ok, kdo, napaka }.
+   *
+   * Merodajen je samo odgovor o repozitoriju. Ime lastnika je okras in ga
+   * vprašamo šele na koncu: fine-grained žeton brez računskih pravic na
+   * /user ne sme odgovoriti, in če bi to šteli za napako, bi zavrnili
+   * povsem veljaven žeton — kar se je tudi zgodilo.
+   */
   async preveri() {
     try {
-      /* /user rabimo samo za prijazen izpis imena. Fine-grained žeton brez
-         računskih pravic tu lahko vrne 403, pa je za repozitorij vseeno
-         popolnoma v redu — zato je usoden samo 401 (napačen žeton). */
-      const jaz = await this._klic('/user');
-      if (jaz.status === 401) return { ok: false, napaka: 'Žeton ni veljaven ali je potekel.' };
-      let kdo = null;
-      if (jaz.ok) { try { kdo = (await jaz.json()).login; } catch (e) {} }
+      const { lastnik, repo } = this.nastavitve;
+      const r = await this._klic(`/repos/${lastnik}/${repo}`);
 
-      const r = await this._klic(`/repos/${this.nastavitve.lastnik}/${this.nastavitve.repo}`);
       if (r.status === 401) return { ok: false, napaka: 'Žeton ni veljaven ali je potekel.' };
       if (r.status === 404) {
-        return { ok: false, napaka: `Repozitorija ${this.nastavitve.lastnik}/${this.nastavitve.repo} ni, ` +
-                                    'ali pa žetonu ni dodeljen. Pri fine-grained žetonu preveri ' +
-                                    'Repository access → Only select repositories.' };
+        return { ok: false, napaka: `Repozitorija ${lastnik}/${repo} ni, ali pa žetonu ni dodeljen. ` +
+                                    'Pri fine-grained žetonu preveri Repository access → Only select repositories.' };
       }
-      if (!r.ok) return { ok: false, napaka: 'Repozitorij: koda ' + r.status + '.' };
+      if (r.status === 403) {
+        return { ok: false, napaka: 'Žetonu je dostop zavrnjen. Preveri Repository permissions → Contents: Read and write.' };
+      }
+      if (!r.ok) return { ok: false, napaka: 'Repozitorij: GitHub je odgovoril s kodo ' + r.status + '.' };
 
       const podatki = await r.json();
       if (!podatki.permissions || !podatki.permissions.push) {
         return { ok: false, napaka: 'Žeton nima pravice pisanja (Contents: Read and write).' };
       }
+
+      // samo za prijazen izpis; karkoli se tu zgodi, na veljavnost ne vpliva
+      let kdo = null;
+      try {
+        const jaz = await this._klic('/user');
+        if (jaz.ok) kdo = (await jaz.json()).login;
+      } catch (e) { /* vseeno */ }
+
       return { ok: true, kdo, zaseben: podatki.private };
     } catch (e) {
       return { ok: false, napaka: 'Ni povezave z GitHubom.' };
