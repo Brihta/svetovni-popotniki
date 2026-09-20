@@ -809,8 +809,13 @@ function izrisiPovezavo() {
 
 async function povezi() {
   const st = $('#povezava-stanje');
-  const pot = $('#repo-pot').value.trim().replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, '');
-  const zeton = $('#zeton').value.trim();
+  const pot = $('#repo-pot').value.trim()
+    .replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, '').replace(/\s+/g, '');
+  /* Kopiranje iz zapiskov, klepetov in spletnih strani rado prinese nevidne
+     znake — ničelno široke presledke, trde presledke, smerne oznake. `trim()`
+     jih ne pobere, GitHub pa žeton zavrne brez pojasnila. Žeton je sestavljen
+     samo iz črk, številk in podčrtajev, zato vse ostalo odstranimo. */
+  const zeton = $('#zeton').value.replace(/[^A-Za-z0-9_]/g, '');
   const trajno = $('#zeton-trajno').checked;
 
   const [lastnik, repo] = pot.split('/');
