@@ -257,6 +257,8 @@ const poKodi = new Map(DRZAVE.map(d => [d.k, d]));
 const drzava = k => poKodi.get(k) || null;
 const zastavaPot = k => 'assets/zastave/' + k + '.svg';
 
+const strniProstor = s => (s || '').replace(/\s+/g, ' ').trim();
+
 let obvestiloCas;
 function obvesti(besedilo) {
   const el = $('#obvestilo');
@@ -314,6 +316,45 @@ const Ucenci = {
     } catch (e) { return null; }
   },
 };
+
+/**
+ * Nov učenec sredi ure. Ime je ključ, na katerega so vezane točke, zato ga
+ * pozneje ne spreminjamo — točke bi ostale brez lastnika. Novo ime gre na
+ * konec seznama: tam ga je v mreži najlažje najti, obstoječi vrstni red pa
+ * ostane tak, kot ga učitelj pozna.
+ */
+function dodajUcenca(ime, razred, skupina) {
+  ime = strniProstor(ime);
+  razred = strniProstor(razred);
+
+  const skup = Stanje.ucenci && Stanje.ucenci[skupina];
+  if (!skup) { obvesti('Seznama učencev ni — odpri Nastavitve in poveži GitHub.'); return false; }
+  if (!ime) { obvesti('Vpiši ime učenca.'); return false; }
+  if (skup.ucenci.some(u => u.ime.toLowerCase() === ime.toLowerCase())) {
+    obvesti(ime + ' je že na seznamu skupine ' + skupina + '.');
+    return false;
+  }
+
+  skup.ucenci.push({ ime, razred });
+  shraniPodatke();
+  osveziPrikaze();
+  // ime se skoraj vedno konča s piko (priimek) — brez še ene na koncu
+  obvesti('Dodano v skupino ' + skupina + ': ' + ime);
+  return true;
+}
+
+/** Razredi, ki v skupini že so — da jih ni treba tipkati. */
+function napolniRazrede(izbirnik, skupina) {
+  const skup = Stanje.ucenci && Stanje.ucenci[skupina];
+  const razredi = [...new Set((skup ? skup.ucenci : []).map(u => u.razred).filter(Boolean))].sort();
+  const seznam = $(izbirnik);
+  seznam.innerHTML = '';
+  razredi.forEach(r => {
+    const o = document.createElement('option');
+    o.value = r;
+    seznam.appendChild(o);
+  });
+}
 
 /* ------------------------------------------------------------------ *
  * NAKLJUČNI IZBOR
@@ -591,6 +632,7 @@ function odpriRazkritje(i) {
   $('#razkritje-pod').textContent = `${d.c} · ${d.en}`;
 
   izrisiUcence();
+  preklopiHitroDodajanje(false);
   $('#razkritje').hidden = false;
   izrisiKviz();
 }
@@ -599,6 +641,7 @@ function izrisiUcence() {
   const ovoj = $('#ucenci');
   ovoj.innerHTML = '';
   const seznam = trenutniUcenci();
+  $('#dodaj-hitro').hidden = !Stanje.ucenci;
 
   if (!seznam.length) {
     ovoj.innerHTML = '<p class="prazno">Seznam učencev ni naložen — točk ni mogoče zapisati. ' +
@@ -620,6 +663,29 @@ function izrisiUcence() {
   });
 
   osveziStevec();
+}
+
+/** Vrstica pod mrežo: gumb „+ učenec" ali odprti polji. */
+function preklopiHitroDodajanje(odpri) {
+  $('#hitro-polja').hidden = !odpri;
+  $('#odpri-hitro').hidden = odpri;
+  if (!odpri) return;
+  napolniRazrede('#razredi-hitro', Stanje.skupina);
+  $('#hitro-ime').value = '';
+  $('#hitro-razred').value = '';
+  $('#hitro-ime').focus();
+}
+
+function hitroDodaj() {
+  if (!dodajUcenca($('#hitro-ime').value, $('#hitro-razred').value, Stanje.skupina)) {
+    $('#hitro-ime').focus();
+    return;
+  }
+  izrisiUcence();
+  preklopiHitroDodajanje(false);
+  // novo ime je na koncu mreže — naj se vidi
+  const ovoj = $('#ucenci');
+  ovoj.scrollTop = ovoj.scrollHeight;
 }
 
 /** Ena točka za eno pravilno ime pri eni zastavi; drugi klik jo vzame nazaj. */
@@ -936,6 +1002,14 @@ function poveziDogodke() {
   $('#vsi-pravilno').addEventListener('click', () => vsiUcenci(true));
   $('#nihce-pravilno').addEventListener('click', () => vsiUcenci(false));
 
+  $('#odpri-hitro').addEventListener('click', () => preklopiHitroDodajanje(true));
+  $('#hitro-preklici').addEventListener('click', () => preklopiHitroDodajanje(false));
+  $('#hitro-dodaj').addEventListener('click', hitroDodaj);
+  ['#hitro-ime', '#hitro-razred'].forEach(izb => $(izb).addEventListener('keydown', e => {
+    if (e.key === 'Enter')  { e.preventDefault(); hitroDodaj(); }
+    if (e.key === 'Escape') { e.preventDefault(); preklopiHitroDodajanje(false); }
+  }));
+
   // ---- lestvica
   $$('#lestvica-zavihki .zavihek').forEach(z =>
     z.addEventListener('click', () => odpriLestvico(z.dataset.lestvica)));
@@ -956,6 +1030,12 @@ function poveziDogodke() {
     osveziVidene();
     obvesti('Izbor zastav se začne znova. Točke so ostale.');
   });
+
+  $('#nov-skupina').addEventListener('change', izrisiUcenceNastavitve);
+  $('#dodaj-ucenca').addEventListener('click', dodajIzNastavitev);
+  ['#nov-ime', '#nov-razred'].forEach(izb => $(izb).addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); dodajIzNastavitev(); }
+  }));
 
   $('#izvozi-json').addEventListener('click', izvoziJson);
   $('#uvozi-json').addEventListener('click', () => $('#datoteka-uvoz').click());
@@ -1032,10 +1112,35 @@ function poveziDogodke() {
   });
 }
 
+/** Razdelek „Učenci" v nastavitvah — za skupino, izbrano v spustnem meniju. */
+function izrisiUcenceNastavitve() {
+  const s = $('#nov-skupina').value;
+  const skup = Stanje.ucenci && Stanje.ucenci[s];
+  $('#ucenci-opis').textContent = skup
+    ? `${skup.naziv} — ${skup.ucenci.length} ${sklon(skup.ucenci.length, ['učenec', 'učenca', 'učenci', 'učencev'])}.`
+    : 'Seznama učencev ni. Poveži GitHub ali naloži varnostno kopijo.';
+  $('#dodaj-ucenca').disabled = !skup;
+  napolniRazrede('#razredi-nastavitve', s);
+}
+
+function dodajIzNastavitev() {
+  const s = $('#nov-skupina').value;
+  if (!dodajUcenca($('#nov-ime').value, $('#nov-razred').value, s)) { $('#nov-ime').focus(); return; }
+  $('#nov-ime').value = '';
+  $('#nov-razred').value = '';
+  $('#nov-ime').focus();
+  izrisiUcenceNastavitve();
+  if (!$('#razkritje').hidden) izrisiUcence();
+}
+
 function odpriNastavitve() {
   $('#nastavi-cas').value = Stanje.sekund;
   $('#nastavi-zvok').checked = Stanje.zvok;
   osveziVidene();
+  $('#nov-skupina').value = Stanje.skupina;
+  $('#nov-ime').value = '';
+  $('#nov-razred').value = '';
+  izrisiUcenceNastavitve();
   izrisiPovezavo();
   $('#nastavitve').hidden = false;
 }

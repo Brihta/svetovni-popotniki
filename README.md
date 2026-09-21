@@ -46,6 +46,16 @@ Ker ure tečejo v različnih učilnicah, točke ne smejo živeti v enem brskalni
 Zato so **seznam učencev in vse točke v ločenem zasebnem repozitoriju**, v
 datoteki `podatki.json`. Brskalnik ima samo delovno kopijo.
 
+### Nov učenec sredi ure
+
+Pod mrežo imen je v razkritju gumb **+ učenec** — vpišeš ime in razred, `Enter`,
+in učenec je takoj na seznamu, na koncu mreže, da ga je lahko najti. Isto je v
+**Nastavitvah → Učenci**, kjer lahko dodaš tudi v drugo skupino.
+
+Ime je ključ, na katerega se vežejo točke, zato ga pozneje ne spreminjaj —
+točke bi ostale brez lastnika. In za razliko od krogov se seznam učencev ne
+zliva: obvelja zadnji zapis, zato dodajaj na enem računalniku naenkrat.
+
 ### Enkratna nastavitev
 
 1. Na GitHubu naredi nov **zaseben** repozitorij, npr. `nicki89-blip/popotniki-tocke`.

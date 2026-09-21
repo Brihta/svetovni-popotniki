@@ -109,6 +109,16 @@
         </div>
       </div>
       <div class="ucenci" id="ucenci"></div>
+      <div class="dodaj-vrsta" id="dodaj-hitro">
+        <button class="gumb gumb-tih" id="odpri-hitro">+ učenec</button>
+        <div class="dodaj-polja" id="hitro-polja" hidden>
+          <input type="text" id="hitro-ime" placeholder="Ime P." autocomplete="off" spellcheck="false" aria-label="Ime novega učenca">
+          <input type="text" id="hitro-razred" class="ozko" placeholder="4. B" list="razredi-hitro" autocomplete="off" aria-label="Razred">
+          <datalist id="razredi-hitro"></datalist>
+          <button class="gumb gumb-glavni" id="hitro-dodaj">Dodaj</button>
+          <button class="gumb gumb-tih" id="hitro-preklici">Prekliči</button>
+        </div>
+      </div>
       <div class="razkritje-noga">
         <span class="stevec" id="stevec-pravilnih">0 učencev</span>
         <button class="gumb gumb-tih" id="zapri-razkritje">Zapri</button>
@@ -161,6 +171,28 @@
         <h3>Že vprašane zastave</h3>
         <p class="drobno" id="videne-opis"></p>
         <button class="gumb gumb-tih" id="pozabi-videne">Začni izbor zastav znova</button>
+      </section>
+
+      <section class="razdelek">
+        <h3>Učenci</h3>
+        <p class="drobno" id="ucenci-opis"></p>
+        <div class="dodaj-polja dodaj-polja-nastavitve">
+          <label class="polje">
+            <span>Skupina</span>
+            <select id="nov-skupina">
+              <option value="A">A</option>
+              <option value="B">B</option>
+            </select>
+          </label>
+          <input type="text" id="nov-ime" placeholder="Ime P." autocomplete="off" spellcheck="false" aria-label="Ime novega učenca">
+          <input type="text" id="nov-razred" class="ozko" placeholder="4. B" list="razredi-nastavitve" autocomplete="off" aria-label="Razred">
+          <datalist id="razredi-nastavitve"></datalist>
+          <button class="gumb gumb-tih" id="dodaj-ucenca">Dodaj</button>
+        </div>
+        <p class="drobno">
+          Novo ime se pripne na konec seznama in gre tudi na GitHub. Točke so
+          vezane nanj, zato ga pozneje ne spreminjaj — sicer ostanejo brez lastnika.
+        </p>
       </section>
 
       <section class="razdelek">

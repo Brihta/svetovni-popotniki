@@ -304,6 +304,27 @@ body {
 .ucenec.pravilno small { color:rgba(255,255,255,.8); }
 .ucenci .prazno { grid-column:1/-1; color:var(--muted); font-size:14px; padding:8px 0; }
 
+/* ---- dodajanje učenca (razkritje in nastavitve) ----
+   Nov učenec se pojavi sredi ure; gumb mora biti tam, kjer se to opazi —
+   pod mrežo imen, ne skrit v nastavitvah. */
+.dodaj-vrsta { flex:0 0 auto; padding:0 20px 14px; }
+.dodaj-vrsta[hidden] { display:none; }
+.dodaj-vrsta .gumb { padding:8px 14px; font-size:13px; }
+
+.dodaj-polja { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.dodaj-polja[hidden] { display:none; }
+.dodaj-polja input {
+  font:inherit; font-size:14px; font-weight:600; color:var(--text);
+  background:var(--kartica-2); border:1px solid var(--rob); border-radius:12px;
+  padding:9px 12px; flex:1 1 140px; min-width:0; max-width:240px;
+}
+.dodaj-polja input.ozko { flex:0 0 96px; }
+.dodaj-polja input::placeholder { color:var(--muted); opacity:.75; font-style:italic; }
+.dodaj-polja input:focus-visible { outline:3px solid var(--brand-yellow); outline-offset:1px; }
+
+.dodaj-polja-nastavitve { margin-top:10px; }
+.dodaj-polja-nastavitve .polje { margin-bottom:0; }
+
 .razkritje-noga {
   flex:0 0 auto; display:flex; align-items:center; gap:10px;
   padding:14px 20px; border-top:1px solid var(--rob); background:var(--kartica-2);
