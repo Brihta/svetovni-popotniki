@@ -439,11 +439,18 @@ function izrisiPripravo() {
         ${d ? `<img src="${zastavaPot(d.k)}" alt="Zastava: ${d.sl}">` : '<span class="prazno">brez zastave</span>'}
       </div>
       <div class="mesto-ime">
-        ${d ? `${d.sl} <span class="celina">· ${d.c}</span>` : '—'}
+        ${!d ? '—'
+             : mesto.skrito ? '<span class="zastrto">skrito</span>'
+             : `${d.sl} <span class="celina">· ${d.c}</span>`}
       </div>`;
 
     const izbira = $('select', el);
     izbira.value = mesto.k || '';
+    // Ime stoji tudi v spustnem meniju. Dokler je skrito, zastremo še tega —
+    // sicer ga učenci preberejo z zaslona, medtem ko učitelj pripravlja uro.
+    if (mesto.skrito && izbira.selectedIndex > 0) {
+      izbira.options[izbira.selectedIndex].textContent = '— skrito —';
+    }
     izbira.addEventListener('change', () => {
       Stanje.mesta[i].k = izbira.value || null;
       shraniStanje();

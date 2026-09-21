@@ -168,6 +168,8 @@ body {
 }
 .mesto-ime .celina { color:var(--muted); font-weight:600; font-size:13px; }
 .mesto.skrito .mesto-ime { color:var(--muted); font-style:italic; font-weight:600; }
+/* Sivo ime se da prebrati z zadnje klopi — skrito je zato res zastrto. */
+.mesto-ime .zastrto { letter-spacing:.6px; }
 
 .namig { flex:0 0 auto; padding-top:12px; color:rgba(255,255,255,.48); font-size:13px; text-align:center; }
 .namig strong { color:rgba(255,255,255,.72); }
